@@ -1,0 +1,21 @@
+.gomechanic-logo {
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  color: #ff3c00;
+  transition: transform 0.3s cubic-bezier(.4,2,.6,1), color 0.3s;
+  animation: logoPulse 2s infinite alternate;
+}
+.gomechanic-logo:hover {
+  color: #d72600;
+  transform: scale(1.12) rotate(-2deg);
+  animation: logoPulseHover 0.6s infinite alternate;
+}
+@keyframes logoPulse {
+  0% { color: #ff3c00; transform: scale(1); }
+  100% { color: #ff6a00; transform: scale(1.06); }
+}
+@keyframes logoPulseHover {
+  0% { color: #ff3c00; transform: scale(1.12) rotate(-2deg); }
+  100% { color: #d72600; transform: scale(1.18) rotate(2deg); }
+} 

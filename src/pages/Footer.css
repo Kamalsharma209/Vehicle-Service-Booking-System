@@ -1,0 +1,35 @@
+.footer {
+  background: #222;
+  color: #fff;
+  padding: 2rem 0 1rem 0;
+  text-align: center;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.company-info h3 {
+  margin: 0 0 0.5rem 0;
+}
+.company-info p {
+  margin: 0.2rem 0;
+}
+.footer-social a {
+  color: #fff;
+  margin: 0 0.5rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-social a:hover {
+  color: #007bff;
+}
+.footer-bottom {
+  margin-top: 1rem;
+  font-size: 0.95em;
+  color: #bbb;
+} 
