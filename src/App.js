@@ -1,6 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, Container, Box } from '@mui/material';
+import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
+import { Container } from '@mui/material';
 import Home from './pages/Home';
 import BookService from './pages/BookService';
 import Services from './pages/Services';
@@ -8,27 +8,43 @@ import Login from './pages/Login';
 import BookingHistory from './pages/BookingHistory';
 import Footer from './pages/Footer';
 import ServiceDetail from './pages/ServiceDetail';
+import Navbar from './pages/Navbar';
 import './GoMechanicLogo.css';
+
+function CarDetails() {
+  const { carId } = useParams();
+  const [car, setCar] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    fetch('/cars.json')
+      .then(res => res.json())
+      .then(data => {
+        const found = data.find((c) => c.id === carId);
+        setCar(found);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [carId]);
+
+  if (loading) return <div style={{padding: 40, textAlign: 'center'}}><h2>Loading...</h2></div>;
+  if (!car) return <div style={{padding: 40, textAlign: 'center'}}><h2>Car not found</h2></div>;
+
+  return (
+    <div style={{padding: 40, textAlign: 'center'}}>
+      <h2>{car.name}</h2>
+      <img src={car.image} alt={car.name} style={{maxWidth: 400, width: '100%', borderRadius: 12, marginBottom: 20}} />
+      <p><b>Brand:</b> {car.brand}</p>
+      <p><b>Year:</b> {car.year}</p>
+      <p>{car.description}</p>
+    </div>
+  );
+}
 
 function App() {
   return (
     <Router>
-      <AppBar position="static" sx={{ backgroundColor: '#1976d2' }}>
-        <Toolbar>
-          <Box display="flex" alignItems="center" mr={2}>
-            <img
-              src={process.env.PUBLIC_URL + '/GoMechanic.jpg'}
-              alt="GoMechanic Logo"
-              style={{ height: 80, width: 80, borderRadius: '50%', marginRight: 8, objectFit: 'cover', boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }}
-            />
-          </Box>
-          <Button color="inherit" component={Link} to="/">Home</Button>
-          <Button color="inherit" component={Link} to="/services">Services</Button>
-          <Button color="inherit" component={Link} to="/book">Book Service</Button>
-          <Button color="inherit" component={Link} to="/history">Booking History</Button>
-          <Button color="inherit" component={Link} to="/login">Login</Button>
-        </Toolbar>
-      </AppBar>
+      <Navbar />
       <Container sx={{ mt: 4 }}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -37,6 +53,7 @@ function App() {
           <Route path="/book" element={<BookService />} />
           <Route path="/history" element={<BookingHistory />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/car/:carId" element={<CarDetails />} />
         </Routes>
       </Container>
       <Footer />
