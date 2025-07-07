@@ -9,6 +9,9 @@ import BookingHistory from './pages/BookingHistory';
 import Footer from './pages/Footer';
 import ServiceDetail from './pages/ServiceDetail';
 import Navbar from './pages/Navbar';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminRoute from './components/AdminRoute';
 import './GoMechanicLogo.css';
 
 function CarDetails() {
@@ -54,6 +57,14 @@ function App() {
           <Route path="/history" element={<BookingHistory />} />
           <Route path="/login" element={<Login />} />
           <Route path="/car/:carId" element={<CarDetails />} />
+          
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          } />
         </Routes>
       </Container>
       <Footer />
