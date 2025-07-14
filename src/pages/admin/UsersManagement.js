@@ -169,168 +169,110 @@ const UsersManagement = () => {
   }
 
   return (
-    <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h5">Users Management</Typography>
-        <Box display="flex" gap={2}>
-          <TextField
-            size="small"
-            placeholder="Search users..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            InputProps={{
-              startAdornment: <SearchIcon sx={{ mr: 1, color: 'text.secondary' }} />
-            }}
-          />
-        </Box>
-      </Box>
-
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-      )}
-
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Role</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Joined</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredUsers.map((user) => (
-              <TableRow key={user._id}>
-                <TableCell>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    {user.name}
-                  </Typography>
-                </TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.phone}</TableCell>
-                <TableCell>
-                  <Chip
-                    label={user.role}
-                    color={user.role === 'admin' ? 'error' : 'primary'}
-                    size="small"
-                  />
-                </TableCell>
-                <TableCell>
-                  <Chip
-                    label={user.isActive ? 'Active' : 'Inactive'}
-                    color={user.isActive ? 'success' : 'default'}
-                    size="small"
-                  />
-                </TableCell>
-                <TableCell>
-                  {new Date(user.createdAt).toLocaleDateString()}
-                </TableCell>
-                <TableCell>
-                  <IconButton
-                    size="small"
-                    onClick={() => handleOpenDialog(user)}
-                    color="primary"
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    size="small"
-                    onClick={() => handleDelete(user._id)}
-                    color="error"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {/* Edit User Dialog */}
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>
-          {editingUser ? 'Edit User' : 'Add New User'}
-        </DialogTitle>
-        <form onSubmit={handleSubmit}>
-          <DialogContent>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Name"
-                  name="name"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  required
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Email"
-                  name="email"
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  required
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Phone"
-                  name="phone"
-                  value={form.phone}
-                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  required
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth margin="normal" required>
-                  <InputLabel>Role</InputLabel>
-                  <Select
-                    value={form.role}
-                    onChange={(e) => setForm({ ...form, role: e.target.value })}
-                    label="Role"
-                  >
-                    <MenuItem value="user">User</MenuItem>
-                    <MenuItem value="admin">Admin</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth margin="normal" required>
-                  <InputLabel>Status</InputLabel>
-                  <Select
-                    value={form.isActive}
-                    onChange={(e) => setForm({ ...form, isActive: e.target.value })}
-                    label="Status"
-                  >
-                    <MenuItem value={true}>Active</MenuItem>
-                    <MenuItem value={false}>Inactive</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button type="submit" variant="contained" disabled={loading}>
-              {loading ? <CircularProgress size={20} /> : (editingUser ? 'Update' : 'Create')}
+    <Box sx={{ background: '#F5F7FB', minHeight: '100vh', py: 4 }}>
+      <Box sx={{ maxWidth: 1200, mx: 'auto', p: { xs: 2, md: 4 }, borderRadius: 4, background: '#fff', boxShadow: '0 4px 24px rgba(108,99,255,0.06)' }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+          <Typography variant="h4" fontWeight={700}>Users Management</Typography>
+          <Box display="flex" gap={2}>
+            <TextField
+              size="small"
+              placeholder="Search users..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              InputProps={{
+                startAdornment: <SearchIcon sx={{ mr: 1, color: 'text.secondary' }} />,
+                sx: { borderRadius: 2, background: '#F5F7FB' }
+              }}
+            />
+            <Button
+              variant="contained"
+              sx={{
+                background: 'linear-gradient(90deg, #6C63FF 60%, #5A55E0 100%)',
+                color: '#fff',
+                borderRadius: '10px',
+                fontWeight: 600,
+                fontSize: '1rem',
+                px: 3,
+                py: 1.2,
+                boxShadow: '0 4px 16px rgba(108,99,255,0.10)',
+                textTransform: 'none',
+                '&:hover': { background: '#5A55E0' }
+              }}
+              onClick={() => handleOpenDialog()}
+            >
+              Add User
             </Button>
+          </Box>
+        </Box>
+        {error && (
+          <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>
+            {error}
+          </Alert>
+        )}
+        <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: '0 2px 12px rgba(108,99,255,0.04)' }}>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ background: '#F5F7FB' }}>
+                <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Email</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Phone</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Role</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredUsers.map((user) => (
+                <TableRow key={user._id} hover sx={{ transition: 'background 0.2s', '&:hover': { background: '#F5F7FB' } }}>
+                  <TableCell>{user.name}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.phone}</TableCell>
+                  <TableCell>
+                    <Chip label={user.role} color={user.role === 'admin' ? 'primary' : 'default'} size="small" />
+                  </TableCell>
+                  <TableCell>
+                    <Chip label={user.isActive ? 'Active' : 'Inactive'} color={user.isActive ? 'success' : 'default'} size="small" />
+                  </TableCell>
+                  <TableCell>
+                    <IconButton color="primary" onClick={() => handleOpenDialog(user)}><EditIcon /></IconButton>
+                    <IconButton color="error" onClick={() => handleDelete(user._id)}><DeleteIcon /></IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        {/* Dialog for Add/Edit User */}
+        <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 4 } }}>
+          <DialogTitle sx={{ fontWeight: 700 }}>{editingUser ? 'Edit User' : 'Add User'}</DialogTitle>
+          <DialogContent>
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <TextField label="Name" name="name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} fullWidth required sx={{ borderRadius: 2 }} />
+              <TextField label="Email" name="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} fullWidth required sx={{ borderRadius: 2 }} />
+              <TextField label="Phone" name="phone" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} fullWidth required sx={{ borderRadius: 2 }} />
+              <FormControl fullWidth sx={{ borderRadius: 2 }}>
+                <InputLabel>Role</InputLabel>
+                <Select name="role" value={form.role} label="Role" onChange={e => setForm({ ...form, role: e.target.value })}>
+                  <MenuItem value="user">User</MenuItem>
+                  <MenuItem value="admin">Admin</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl fullWidth sx={{ borderRadius: 2 }}>
+                <InputLabel>Status</InputLabel>
+                <Select name="isActive" value={form.isActive} label="Status" onChange={e => setForm({ ...form, isActive: e.target.value === 'true' })}>
+                  <MenuItem value={true}>Active</MenuItem>
+                  <MenuItem value={false}>Inactive</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+          </DialogContent>
+          <DialogActions sx={{ px: 3, pb: 2 }}>
+            <Button onClick={handleCloseDialog} variant="text" sx={{ fontWeight: 600 }}>Cancel</Button>
+            <Button onClick={handleSubmit} variant="contained" sx={{ fontWeight: 600 }}>{editingUser ? 'Update' : 'Add'}</Button>
           </DialogActions>
-        </form>
-      </Dialog>
+        </Dialog>
+      </Box>
     </Box>
   );
 };

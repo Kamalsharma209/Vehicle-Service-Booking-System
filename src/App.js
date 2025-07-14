@@ -4,6 +4,8 @@ import { Container } from '@mui/material';
 import Home from './pages/Home';
 import BookService from './pages/BookService';
 import Services from './pages/Services';
+import About from './pages/About';
+import Membership from './pages/Membership';
 import Login from './pages/Login';
 import BookingHistory from './pages/BookingHistory';
 import Footer from './pages/Footer';
@@ -54,6 +56,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/services" element={<Services />} />
           <Route path="/services/:serviceName" element={<ServiceDetail />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/membership" element={<Membership />} />
           <Route path="/book" element={<BookService />} />
           <Route path="/history" element={<BookingHistory />} />
           <Route path="/login" element={<Login />} />

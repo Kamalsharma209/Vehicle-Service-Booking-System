@@ -43,14 +43,24 @@ const Login = () => {
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         <TextField fullWidth margin="normal" label="Email" name="email" type="email" value={form.email} onChange={handleChange} required />
         <TextField fullWidth margin="normal" label="Password" name="password" type="password" value={form.password} onChange={handleChange} required />
-        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }} disabled={loading}>
+        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2, fontWeight: 700, fontSize: '1.1rem', py: 1.5 }} disabled={loading}>
           {loading ? <CircularProgress size={24} /> : 'Login'}
         </Button>
       </form>
-      <Box mt={2} textAlign="center">
-        <Typography variant="body2">
-          Don't have an account? <Link to="/register">Register here</Link>
+      <Box mt={3} textAlign="center">
+        <Typography variant="body2" sx={{ mb: 1, color: 'text.secondary' }}>
+          New user?
         </Typography>
+        <Button
+          component={Link}
+          to="/register"
+          variant="outlined"
+          color="primary"
+          fullWidth
+          sx={{ fontWeight: 600, py: 1.2 }}
+        >
+          Register
+        </Button>
       </Box>
     </Box>
   );

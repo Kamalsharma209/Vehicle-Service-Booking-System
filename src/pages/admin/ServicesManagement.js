@@ -190,215 +190,191 @@ const ServicesManagement = () => {
   }
 
   return (
-    <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h5">Services Management</Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => handleOpenDialog()}
-        >
-          Add Service
-        </Button>
-      </Box>
-
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-      )}
-
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Service Name</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Duration</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {services.map((service) => (
-              <TableRow key={service._id}>
-                <TableCell>
-                  <Box>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      {service.name}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      {service.description.substring(0, 50)}...
-                    </Typography>
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Chip
-                    label={service.category}
-                    color={getCategoryColor(service.category)}
-                    size="small"
-                  />
-                </TableCell>
-                <TableCell>₹{service.price}</TableCell>
-                <TableCell>{service.duration} min</TableCell>
-                <TableCell>
-                  <Chip
-                    label={service.isActive ? 'Active' : 'Inactive'}
-                    color={service.isActive ? 'success' : 'default'}
-                    size="small"
-                  />
-                </TableCell>
-                <TableCell>
-                  <IconButton
-                    size="small"
-                    onClick={() => handleOpenDialog(service)}
-                    color="primary"
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    size="small"
-                    onClick={() => handleDelete(service._id)}
-                    color="error"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
+    <Box sx={{ background: '#F5F7FB', minHeight: '100vh', py: 4 }}>
+      <Box sx={{ maxWidth: 1200, mx: 'auto', p: { xs: 2, md: 4 }, borderRadius: 4, background: '#fff', boxShadow: '0 4px 24px rgba(108,99,255,0.06)' }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+          <Typography variant="h4" fontWeight={700}>Services Management</Typography>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            sx={{
+              background: 'linear-gradient(90deg, #6C63FF 60%, #5A55E0 100%)',
+              color: '#fff',
+              borderRadius: '10px',
+              fontWeight: 600,
+              fontSize: '1rem',
+              px: 3,
+              py: 1.2,
+              boxShadow: '0 4px 16px rgba(108,99,255,0.10)',
+              textTransform: 'none',
+              '&:hover': { background: '#5A55E0' }
+            }}
+            onClick={() => handleOpenDialog()}
+          >
+            Add Service
+          </Button>
+        </Box>
+        {error && (
+          <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>
+            {error}
+          </Alert>
+        )}
+        <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: '0 2px 12px rgba(108,99,255,0.04)' }}>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ background: '#F5F7FB' }}>
+                <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Category</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Price</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Duration</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {/* Add/Edit Service Dialog */}
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
-        <DialogTitle>
-          {editingService ? 'Edit Service' : 'Add New Service'}
-        </DialogTitle>
-        <form onSubmit={handleSubmit}>
-          <DialogContent>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Service Name"
-                  name="name"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  required
-                  margin="normal"
-                />
+            </TableHead>
+            <TableBody>
+              {services.map((service) => (
+                <TableRow key={service._id} hover sx={{ transition: 'background 0.2s', '&:hover': { background: '#F5F7FB' } }}>
+                  <TableCell>{service.name}</TableCell>
+                  <TableCell><Chip label={service.category} color={getCategoryColor(service.category)} size="small" /></TableCell>
+                  <TableCell>₹{service.price?.toLocaleString()}</TableCell>
+                  <TableCell>{service.duration} min</TableCell>
+                  <TableCell>
+                    <IconButton color="primary" onClick={() => handleOpenDialog(service)}><EditIcon /></IconButton>
+                    <IconButton color="error" onClick={() => handleDelete(service._id)}><DeleteIcon /></IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        {/* Add/Edit Service Dialog */}
+        <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
+          <DialogTitle>
+            {editingService ? 'Edit Service' : 'Add New Service'}
+          </DialogTitle>
+          <form onSubmit={handleSubmit}>
+            <DialogContent>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Service Name"
+                    name="name"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    required
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth margin="normal" required>
+                    <InputLabel>Category</InputLabel>
+                    <Select
+                      value={form.category}
+                      onChange={(e) => setForm({ ...form, category: e.target.value })}
+                      label="Category"
+                    >
+                      <MenuItem value="maintenance">Maintenance</MenuItem>
+                      <MenuItem value="repair">Repair</MenuItem>
+                      <MenuItem value="cleaning">Cleaning</MenuItem>
+                      <MenuItem value="inspection">Inspection</MenuItem>
+                      <MenuItem value="emergency">Emergency</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Description"
+                    name="description"
+                    value={form.description}
+                    onChange={(e) => setForm({ ...form, description: e.target.value })}
+                    required
+                    multiline
+                    rows={3}
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    fullWidth
+                    label="Price (₹)"
+                    name="price"
+                    type="number"
+                    value={form.price}
+                    onChange={(e) => setForm({ ...form, price: e.target.value })}
+                    required
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    fullWidth
+                    label="Duration (minutes)"
+                    name="duration"
+                    type="number"
+                    value={form.duration}
+                    onChange={(e) => setForm({ ...form, duration: e.target.value })}
+                    required
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    fullWidth
+                    label="Warranty (days)"
+                    name="warranty"
+                    type="number"
+                    value={form.warranty}
+                    onChange={(e) => setForm({ ...form, warranty: e.target.value })}
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Image URL"
+                    name="image"
+                    value={form.image}
+                    onChange={(e) => setForm({ ...form, image: e.target.value })}
+                    required
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Features (one per line)"
+                    name="features"
+                    value={form.features}
+                    onChange={(e) => setForm({ ...form, features: e.target.value })}
+                    multiline
+                    rows={4}
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Requirements (one per line)"
+                    name="requirements"
+                    value={form.requirements}
+                    onChange={(e) => setForm({ ...form, requirements: e.target.value })}
+                    multiline
+                    rows={4}
+                    margin="normal"
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth margin="normal" required>
-                  <InputLabel>Category</InputLabel>
-                  <Select
-                    value={form.category}
-                    onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    label="Category"
-                  >
-                    <MenuItem value="maintenance">Maintenance</MenuItem>
-                    <MenuItem value="repair">Repair</MenuItem>
-                    <MenuItem value="cleaning">Cleaning</MenuItem>
-                    <MenuItem value="inspection">Inspection</MenuItem>
-                    <MenuItem value="emergency">Emergency</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Description"
-                  name="description"
-                  value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  required
-                  multiline
-                  rows={3}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <TextField
-                  fullWidth
-                  label="Price (₹)"
-                  name="price"
-                  type="number"
-                  value={form.price}
-                  onChange={(e) => setForm({ ...form, price: e.target.value })}
-                  required
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <TextField
-                  fullWidth
-                  label="Duration (minutes)"
-                  name="duration"
-                  type="number"
-                  value={form.duration}
-                  onChange={(e) => setForm({ ...form, duration: e.target.value })}
-                  required
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <TextField
-                  fullWidth
-                  label="Warranty (days)"
-                  name="warranty"
-                  type="number"
-                  value={form.warranty}
-                  onChange={(e) => setForm({ ...form, warranty: e.target.value })}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Image URL"
-                  name="image"
-                  value={form.image}
-                  onChange={(e) => setForm({ ...form, image: e.target.value })}
-                  required
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Features (one per line)"
-                  name="features"
-                  value={form.features}
-                  onChange={(e) => setForm({ ...form, features: e.target.value })}
-                  multiline
-                  rows={4}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Requirements (one per line)"
-                  name="requirements"
-                  value={form.requirements}
-                  onChange={(e) => setForm({ ...form, requirements: e.target.value })}
-                  multiline
-                  rows={4}
-                  margin="normal"
-                />
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button type="submit" variant="contained" disabled={loading}>
-              {loading ? <CircularProgress size={20} /> : (editingService ? 'Update' : 'Create')}
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDialog}>Cancel</Button>
+              <Button type="submit" variant="contained" disabled={loading}>
+                {loading ? <CircularProgress size={20} /> : (editingService ? 'Update' : 'Create')}
+              </Button>
+            </DialogActions>
+          </form>
+        </Dialog>
+      </Box>
     </Box>
   );
 };

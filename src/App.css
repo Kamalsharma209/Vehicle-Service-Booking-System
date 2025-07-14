@@ -13,44 +13,60 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 body {
   min-height: 100vh;
   margin: 0;
-  background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/car-service.jpg');
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-attachment: fixed;
-  background-size: cover;
-  font-family: 'Roboto', sans-serif;
+  background: #F5F7FB;
+  font-family: 'Poppins', 'Roboto', Arial, sans-serif;
+  color: #222;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
-/* Optional: make MUI Container backgrounds slightly transparent for readability */
+h1, h2, h3, h4, h5, h6, .MuiTypography-h1, .MuiTypography-h2, .MuiTypography-h3, .MuiTypography-h4, .MuiTypography-h5, .MuiTypography-h6 {
+  font-family: 'Poppins', 'Roboto', Arial, sans-serif;
+  font-weight: 700;
+  color: #222;
+}
+
+.MuiButton-containedPrimary, .MuiButton-contained {
+  background: linear-gradient(90deg, #6C63FF 60%, #5A55E0 100%);
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(108,99,255,0.10);
+  text-transform: none;
+}
+
+.MuiButton-containedPrimary:hover, .MuiButton-contained:hover {
+  background: #5A55E0;
+}
+
+.MuiPaper-root {
+  border-radius: 16px;
+}
+
+.MuiTextField-root {
+  border-radius: 8px;
+}
+
 .MuiContainer-root {
-  background: rgba(255,255,255,0.85);
-  border-radius: 12px;
-  padding: 24px;
+  background: rgba(255,255,255,0.95);
+  border-radius: 16px;
+  padding: 32px;
+}
+
+@keyframes car-slide {
+  0% {
+    transform: translateX(-100px);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.car-slide-animate {
+  animation: car-slide 5s ease-out forwards;
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Alert, CircularProgress } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -79,6 +80,21 @@ const Register = () => {
           {loading ? <CircularProgress size={24} /> : 'Register'}
         </Button>
       </form>
+      <Box mt={3} textAlign="center">
+        <Typography variant="body2" sx={{ mb: 1, color: 'text.secondary' }}>
+          Already have an account?
+        </Typography>
+        <Button
+          component={Link}
+          to="/login"
+          variant="outlined"
+          color="primary"
+          fullWidth
+          sx={{ fontWeight: 600, py: 1.2 }}
+        >
+          Login
+        </Button>
+      </Box>
     </Box>
   );
 };
