@@ -28,8 +28,7 @@ import {
 import {
   Add as AddIcon,
   Edit as EditIcon,
-  Delete as DeleteIcon,
-  Visibility as ViewIcon
+  Delete as DeleteIcon
 } from '@mui/icons-material';
 
 const ServicesManagement = () => {

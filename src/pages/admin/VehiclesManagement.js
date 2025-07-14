@@ -21,12 +21,15 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button
+  Button,
+  IconButton
 } from '@mui/material';
 import {
   Search as SearchIcon,
-  DirectionsCar as CarIcon,
-  Visibility as ViewIcon
+  Visibility as ViewIcon,
+  Add as AddIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon
 } from '@mui/icons-material';
 
 const VehiclesManagement = () => {
@@ -36,6 +39,12 @@ const VehiclesManagement = () => {
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [error, setError] = useState('');
+  const [openFormDialog, setOpenFormDialog] = useState(false);
+  const [editingVehicle, setEditingVehicle] = useState(null);
+  const [form, setForm] = useState({
+    name: '', brand: '', model: '', year: '', registrationNumber: '', color: '', fuelType: '', transmission: '', engineCapacity: '', mileage: '', image: '', user: { name: '', email: '' }, isActive: true
+  });
+  const [deleteDialog, setDeleteDialog] = useState({ open: false, vehicle: null });
 
   useEffect(() => {
     fetchVehicles();
@@ -132,6 +141,79 @@ const VehiclesManagement = () => {
     }
   };
 
+  const handleOpenForm = (vehicle = null) => {
+    if (vehicle) {
+      setEditingVehicle(vehicle);
+      setForm({ ...vehicle, user: { ...vehicle.user } });
+    } else {
+      setEditingVehicle(null);
+      setForm({ name: '', brand: '', model: '', year: '', registrationNumber: '', color: '', fuelType: '', transmission: '', engineCapacity: '', mileage: '', image: '', user: { name: '', email: '' }, isActive: true });
+    }
+    setOpenFormDialog(true);
+  };
+
+  const handleCloseForm = () => {
+    setOpenFormDialog(false);
+    setEditingVehicle(null);
+  };
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    if (name === 'userName' || name === 'userEmail') {
+      setForm((prev) => ({ ...prev, user: { ...prev.user, [name === 'userName' ? 'name' : 'email']: value } }));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('adminToken');
+      const method = editingVehicle ? 'PUT' : 'POST';
+      const url = editingVehicle ? `http://localhost:5000/api/vehicles/${editingVehicle._id}` : 'http://localhost:5000/api/vehicles';
+      const body = { ...form, year: Number(form.year), engineCapacity: Number(form.engineCapacity), mileage: Number(form.mileage) };
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify(body)
+      });
+      if (response.ok) {
+        fetchVehicles();
+        handleCloseForm();
+      } else {
+        const data = await response.json();
+        setError(data.message || 'Operation failed');
+      }
+    } catch (error) {
+      setError('Network error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`http://localhost:5000/api/vehicles/${deleteDialog.vehicle._id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        fetchVehicles();
+        setDeleteDialog({ open: false, vehicle: null });
+      } else {
+        setError('Failed to delete vehicle');
+      }
+    } catch (error) {
+      setError('Network error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading && vehicles.length === 0) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
@@ -144,15 +226,18 @@ const VehiclesManagement = () => {
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h5">Vehicles Management</Typography>
-        <TextField
-          size="small"
-          placeholder="Search vehicles..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            startAdornment: <SearchIcon sx={{ mr: 1, color: 'text.secondary' }} />
-          }}
-        />
+        <Box display="flex" gap={2}>
+          <TextField
+            size="small"
+            placeholder="Search vehicles..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{ startAdornment: <SearchIcon sx={{ mr: 1, color: 'text.secondary' }} /> }}
+          />
+          <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenForm()}>
+            Add Vehicle
+          </Button>
+        </Box>
       </Box>
 
       {error && (
@@ -300,6 +385,12 @@ const VehiclesManagement = () => {
                   >
                     <ViewIcon />
                   </IconButton>
+                  <IconButton size="small" onClick={() => handleOpenForm(vehicle)} color="info">
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton size="small" onClick={() => setDeleteDialog({ open: true, vehicle })} color="error">
+                    <DeleteIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}
@@ -366,6 +457,72 @@ const VehiclesManagement = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Vehicle Form Dialog (Add/Edit) */}
+      <Dialog open={openFormDialog} onClose={handleCloseForm} maxWidth="sm" fullWidth>
+        <DialogTitle>{editingVehicle ? 'Edit Vehicle' : 'Add Vehicle'}</DialogTitle>
+        <form onSubmit={handleFormSubmit}>
+          <DialogContent>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Name" name="name" value={form.name} onChange={handleFormChange} fullWidth required />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Brand" name="brand" value={form.brand} onChange={handleFormChange} fullWidth required />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Model" name="model" value={form.model} onChange={handleFormChange} fullWidth required />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Year" name="year" value={form.year} onChange={handleFormChange} fullWidth required type="number" />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Registration Number" name="registrationNumber" value={form.registrationNumber} onChange={handleFormChange} fullWidth required />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Color" name="color" value={form.color} onChange={handleFormChange} fullWidth required />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Fuel Type" name="fuelType" value={form.fuelType} onChange={handleFormChange} fullWidth required />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Transmission" name="transmission" value={form.transmission} onChange={handleFormChange} fullWidth required />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Engine Capacity (cc)" name="engineCapacity" value={form.engineCapacity} onChange={handleFormChange} fullWidth required type="number" />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Mileage" name="mileage" value={form.mileage} onChange={handleFormChange} fullWidth required type="number" />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Image URL" name="image" value={form.image} onChange={handleFormChange} fullWidth />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Owner Name" name="userName" value={form.user.name} onChange={handleFormChange} fullWidth required />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Owner Email" name="userEmail" value={form.user.email} onChange={handleFormChange} fullWidth required />
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseForm}>Cancel</Button>
+            <Button type="submit" variant="contained" disabled={loading}>{editingVehicle ? 'Update' : 'Add'}</Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialog.open} onClose={() => setDeleteDialog({ open: false, vehicle: null })}>
+        <DialogTitle>Delete Vehicle</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to delete this vehicle?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialog({ open: false, vehicle: null })}>Cancel</Button>
+          <Button onClick={handleDelete} color="error" variant="contained" disabled={loading}>Delete</Button>
         </DialogActions>
       </Dialog>
     </Box>

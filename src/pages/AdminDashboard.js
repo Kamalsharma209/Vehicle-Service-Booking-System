@@ -12,7 +12,6 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Avatar,
   Chip,
   LinearProgress
 } from '@mui/material';
@@ -22,10 +21,8 @@ import {
   Build as BuildIcon,
   BookOnline as BookingIcon,
   DirectionsCar as VehicleIcon,
-  Assessment as StatsIcon,
   Logout as LogoutIcon,
   TrendingUp as TrendingUpIcon,
-  TrendingDown as TrendingDownIcon,
   Schedule as ScheduleIcon,
   CheckCircle as CheckCircleIcon
 } from '@mui/icons-material';
@@ -48,6 +45,7 @@ const AdminDashboard = () => {
     revenue: 0
   });
   const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState({ name: '', email: '', password: '', phone: '', address: '' });
 
   useEffect(() => {
     fetchDashboardStats();

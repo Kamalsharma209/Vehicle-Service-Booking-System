@@ -32,7 +32,9 @@ import {
   Visibility as ViewIcon,
   CheckCircle as CheckCircleIcon,
   Schedule as ScheduleIcon,
-  Cancel as CancelIcon
+  Cancel as CancelIcon,
+  Add as AddIcon,
+  Delete as DeleteIcon
 } from '@mui/icons-material';
 
 const BookingsManagement = () => {
@@ -45,6 +47,22 @@ const BookingsManagement = () => {
     technicianNotes: ''
   });
   const [error, setError] = useState('');
+  const [openCreateDialog, setOpenCreateDialog] = useState(false);
+  const [createForm, setCreateForm] = useState({
+    user: '',
+    service: '',
+    vehicle: '',
+    scheduledDate: '',
+    scheduledTime: '',
+    totalAmount: '',
+    status: 'pending',
+    paymentStatus: 'pending',
+    technicianNotes: ''
+  });
+  const [deleteDialog, setDeleteDialog] = useState({ open: false, booking: null });
+  const [users, setUsers] = useState([]);
+  const [services, setServices] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
 
   useEffect(() => {
     fetchBookings();
@@ -123,6 +141,106 @@ const BookingsManagement = () => {
     });
   };
 
+  const handleOpenCreate = () => {
+    setCreateForm({ user: '', service: '', vehicle: '', scheduledDate: '', scheduledTime: '', totalAmount: '', status: 'pending', paymentStatus: 'pending', technicianNotes: '' });
+    fetchUsers();
+    fetchServices();
+    fetchVehicles();
+    setOpenCreateDialog(true);
+  };
+
+  const handleCloseCreate = () => {
+    setOpenCreateDialog(false);
+  };
+
+  const handleCreateChange = (e) => {
+    const { name, value } = e.target;
+    setCreateForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCreateSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch('http://localhost:5000/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify(createForm)
+      });
+      if (response.ok) {
+        fetchBookings();
+        handleCloseCreate();
+      } else {
+        const data = await response.json();
+        setError(data.message || 'Failed to create booking');
+      }
+    } catch (error) {
+      setError('Network error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`http://localhost:5000/api/bookings/${deleteDialog.booking._id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        fetchBookings();
+        setDeleteDialog({ open: false, booking: null });
+      } else {
+        setError('Failed to delete booking');
+      }
+    } catch (error) {
+      setError('Network error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch('http://localhost:5000/api/users', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setUsers(data.users || []);
+      }
+    } catch {}
+  };
+
+  const fetchServices = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/services');
+      if (response.ok) {
+        const data = await response.json();
+        setServices(data || []);
+      }
+    } catch {}
+  };
+
+  const fetchVehicles = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch('http://localhost:5000/api/vehicles/admin/all', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setVehicles(data.vehicles || []);
+      }
+    } catch {}
+  };
+
+  const filteredVehicles = createForm.user ? vehicles.filter(v => v.user && v.user._id === createForm.user) : vehicles;
+
   if (loading && bookings.length === 0) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
@@ -136,6 +254,12 @@ const BookingsManagement = () => {
       <Typography variant="h5" gutterBottom>
         Bookings Management
       </Typography>
+
+      <Box display="flex" justifyContent="flex-end" mb={2}>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpenCreate}>
+          Add Booking
+        </Button>
+      </Box>
 
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
@@ -281,6 +405,9 @@ const BookingsManagement = () => {
                   >
                     <EditIcon />
                   </IconButton>
+                  <IconButton size="small" onClick={() => setDeleteDialog({ open: true, booking })} color="error">
+                    <DeleteIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}
@@ -332,6 +459,90 @@ const BookingsManagement = () => {
           >
             Update Status
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Create Booking Dialog */}
+      <Dialog open={openCreateDialog} onClose={handleCloseCreate} maxWidth="sm" fullWidth>
+        <DialogTitle>Add Booking</DialogTitle>
+        <form onSubmit={handleCreateSubmit}>
+          <DialogContent>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <FormControl fullWidth required>
+                  <InputLabel>User</InputLabel>
+                  <Select
+                    name="user"
+                    value={createForm.user}
+                    label="User"
+                    onChange={handleCreateChange}
+                  >
+                    {users.map((u) => (
+                      <MenuItem key={u._id} value={u._id}>{u.name} ({u.email})</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth required>
+                  <InputLabel>Service</InputLabel>
+                  <Select
+                    name="service"
+                    value={createForm.service}
+                    label="Service"
+                    onChange={handleCreateChange}
+                  >
+                    {services.map((s) => (
+                      <MenuItem key={s._id} value={s._id}>{s.name}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth required>
+                  <InputLabel>Vehicle</InputLabel>
+                  <Select
+                    name="vehicle"
+                    value={createForm.vehicle}
+                    label="Vehicle"
+                    onChange={handleCreateChange}
+                  >
+                    {filteredVehicles.map((v) => (
+                      <MenuItem key={v._id} value={v._id}>{v.name} ({v.registrationNumber})</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Scheduled Date" name="scheduledDate" value={createForm.scheduledDate} onChange={handleCreateChange} fullWidth required type="date" InputLabelProps={{ shrink: true }} />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Scheduled Time" name="scheduledTime" value={createForm.scheduledTime} onChange={handleCreateChange} fullWidth required />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Total Amount" name="totalAmount" value={createForm.totalAmount} onChange={handleCreateChange} fullWidth required type="number" />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField label="Technician Notes" name="technicianNotes" value={createForm.technicianNotes} onChange={handleCreateChange} fullWidth />
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseCreate}>Cancel</Button>
+            <Button type="submit" variant="contained" disabled={loading}>Add</Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialog.open} onClose={() => setDeleteDialog({ open: false, booking: null })}>
+        <DialogTitle>Delete Booking</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to delete this booking?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialog({ open: false, booking: null })}>Cancel</Button>
+          <Button onClick={handleDelete} color="error" variant="contained" disabled={loading}>Delete</Button>
         </DialogActions>
       </Dialog>
     </Box>

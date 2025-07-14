@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AppBar, Toolbar, Button, Box, Select, MenuItem, CircularProgress, Alert } from '@mui/material';
+import { AppBar, Toolbar, Button, Box, Select, MenuItem, CircularProgress, Alert, Typography, Avatar } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
@@ -8,6 +8,8 @@ const Navbar = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem('adminUser') || localStorage.getItem('user'));
 
   useEffect(() => {
     fetch('/cars.json')
@@ -36,6 +38,13 @@ const Navbar = () => {
       navigate(`/car/${encodeURIComponent(car.id)}`);
     }
   };
+
+  function handleLogout() {
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+  }
 
   return (
     <AppBar position="static" sx={{ backgroundColor: '#1976d2' }}>
@@ -71,6 +80,18 @@ const Navbar = () => {
               ))}
             </Select>
           )}
+        </Box>
+        <Box display="flex" justifyContent="space-between" alignItems="center" p={2}>
+          <Box>
+            {user && (
+              <Box display="flex" alignItems="center" gap={1}>
+                <Avatar>{user.name ? user.name[0] : 'U'}</Avatar>
+                <Typography variant="subtitle2">{user.name}</Typography>
+                <Typography variant="body2" color="textSecondary">{user.email}</Typography>
+                <Button onClick={handleLogout} size="small" color="secondary">Logout</Button>
+              </Box>
+            )}
+          </Box>
         </Box>
       </Toolbar>
     </AppBar>

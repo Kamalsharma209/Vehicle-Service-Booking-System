@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import {
   Box,
   Container,
-  Paper,
   TextField,
   Button,
   Typography,
   Alert,
   CircularProgress,
   Card,
-  CardContent
+  CardContent,
+  Snackbar
 } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import {
   AdminPanelSettings as AdminIcon,
   Lock as LockIcon
@@ -20,6 +21,7 @@ const AdminLogin = () => {
   const [form, setForm] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [successSnackbar, setSuccessSnackbar] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -47,7 +49,10 @@ const AdminLogin = () => {
         if (data.role === 'admin') {
           localStorage.setItem('adminToken', data.token);
           localStorage.setItem('adminUser', JSON.stringify(data));
-          window.location.href = '/admin/dashboard';
+          setSuccessSnackbar(true); // Show success popup
+          setTimeout(() => {
+            window.location.href = '/admin/dashboard';
+          }, 1200);
         } else {
           setError('Access denied. Admin privileges required.');
         }
@@ -145,6 +150,18 @@ const AdminLogin = () => {
                 Password: admin123
               </Typography>
             </Box>
+
+            {/* Snackbar for successful login */}
+            <Snackbar
+              open={successSnackbar}
+              autoHideDuration={1000}
+              onClose={() => setSuccessSnackbar(false)}
+              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+              <MuiAlert onClose={() => setSuccessSnackbar(false)} severity="success" sx={{ width: '100%' }}>
+                Successfully logged in!
+              </MuiAlert>
+            </Snackbar>
           </CardContent>
         </Card>
       </Box>

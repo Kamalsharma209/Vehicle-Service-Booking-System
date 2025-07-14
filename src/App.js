@@ -12,6 +12,7 @@ import Navbar from './pages/Navbar';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminRoute from './components/AdminRoute';
+import Register from './pages/Register';
 import './GoMechanicLogo.css';
 
 function CarDetails() {
@@ -56,6 +57,7 @@ function App() {
           <Route path="/book" element={<BookService />} />
           <Route path="/history" element={<BookingHistory />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/car/:carId" element={<CarDetails />} />
           
           {/* Admin Routes */}

@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
-  TrendingDown as TrendingDownIcon,
   People as PeopleIcon,
   BookOnline as BookingIcon,
   CheckCircle as CheckCircleIcon,

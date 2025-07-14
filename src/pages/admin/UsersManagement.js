@@ -28,8 +28,7 @@ import {
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
-  Search as SearchIcon,
-  Visibility as ViewIcon
+  Search as SearchIcon
 } from '@mui/icons-material';
 
 const UsersManagement = () => {
