@@ -4,12 +4,9 @@ import {
   Box,
   Typography,
   Container,
-  Card,
-  CardContent,
   Grid,
   Button,
   Chip,
-  Divider,
   Paper,
   List,
   ListItem,
@@ -17,14 +14,11 @@ import {
   ListItemText,
   Rating,
   Alert,
-  CircularProgress,
-  IconButton,
-  Tooltip
+  CircularProgress
 } from '@mui/material';
 import {
   ArrowBack as ArrowBackIcon,
   CheckCircle as CheckIcon,
-  Star as StarIcon,
   Schedule as ScheduleIcon,
   AttachMoney as PriceIcon,
   Build as BuildIcon,

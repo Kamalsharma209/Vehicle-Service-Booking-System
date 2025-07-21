@@ -45,7 +45,6 @@ const AdminDashboard = () => {
     revenue: 0
   });
   const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState({ name: '', email: '', password: '', phone: '', address: '' });
 
   useEffect(() => {
     fetchDashboardStats();

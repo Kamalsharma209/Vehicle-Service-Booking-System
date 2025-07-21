@@ -25,9 +25,6 @@ import {
 } from '@mui/material';
 import {
   CheckCircle as CheckIcon,
-  Star as StarIcon,
-  Security as SecurityIcon,
-  Speed as SpeedIcon,
   Support as SupportIcon,
   Discount as DiscountIcon,
   PriorityHigh as PriorityIcon,

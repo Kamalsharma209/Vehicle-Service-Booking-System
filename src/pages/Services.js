@@ -16,16 +16,12 @@ import {
   CircularProgress,
   Alert,
   CardMedia,
-  Rating,
   Divider,
   Container,
-  Paper,
-  IconButton,
-  Tooltip
+  Paper
 } from '@mui/material';
 import {
   Search as SearchIcon,
-  FilterList as FilterIcon,
   Build as BuildIcon,
   CleaningServices as CleaningIcon,
   Engineering as EngineeringIcon,

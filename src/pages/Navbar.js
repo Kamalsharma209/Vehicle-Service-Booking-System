@@ -13,11 +13,8 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import { 
   Build as BuildIcon,
-  CleaningServices as CleaningIcon,
   Engineering as EngineeringIcon,
-  Emergency as EmergencyIcon,
   Visibility as VisibilityIcon,
-  Schedule as ScheduleIcon,
   AttachMoney as PriceIcon,
   BatteryChargingFull as BatteryIcon,
   LocalCarWash as CarWashIcon,
@@ -67,7 +64,7 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static" elevation={0} sx={{ background: '#fff', color: '#222', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+    <AppBar position="static" elevation={0} sx={{ background: 'skyblue', color: '#222', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
       <Toolbar sx={{ justifyContent: 'space-between', minHeight: 80 }}>
         {/* Logo */}
         <Box display="flex" alignItems="center" gap={1}>
@@ -129,8 +126,10 @@ const Navbar = () => {
           <Button
             component={Link}
             to="/login"
-            variant="outlined"
+            variant="contained"
             sx={{
+              background: 'linear-gradient(90deg, #6C63FF 60%, #5A55E0 100%)',
+              color: '#fff',
               borderRadius: '10px',
               fontWeight: 600,
               fontSize: '1rem',
@@ -138,9 +137,8 @@ const Navbar = () => {
               py: 1.2,
               ml: 2,
               textTransform: 'none',
-              color: '#6C63FF',
-              borderColor: '#6C63FF',
-              '&:hover': { background: '#f3f2fd', borderColor: '#5A55E0' }
+              boxShadow: '0 4px 16px rgba(108,99,255,0.10)',
+              '&:hover': { background: '#5A55E0' }
             }}
           >
             Login

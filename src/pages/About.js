@@ -9,7 +9,6 @@ import {
   LocationOn as LocationIcon,
   Phone as PhoneIcon,
   Email as EmailIcon,
-  Timeline as TimelineIcon,
   TrendingUp as TrendingUpIcon
 } from '@mui/icons-material';
 

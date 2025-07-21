@@ -13,22 +13,9 @@ import {
   Chip,
   Alert,
   CircularProgress,
-  TextField,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Grid,
-  Card,
-  CardContent
+  Button
 } from '@mui/material';
 import {
-  Edit as EditIcon,
   Visibility as ViewIcon,
   CheckCircle as CheckCircleIcon,
   Schedule as ScheduleIcon,
@@ -40,28 +27,12 @@ import {
 const BookingsManagement = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedBooking, setSelectedBooking] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
   const [statusForm, setStatusForm] = useState({
     status: '',
     technicianNotes: ''
   });
   const [error, setError] = useState('');
-  const [openCreateDialog, setOpenCreateDialog] = useState(false);
-  const [createForm, setCreateForm] = useState({
-    user: '',
-    service: '',
-    vehicle: '',
-    scheduledDate: '',
-    scheduledTime: '',
-    totalAmount: '',
-    status: 'pending',
-    paymentStatus: 'pending',
-    technicianNotes: ''
-  });
   const [deleteDialog, setDeleteDialog] = useState({ open: false, booking: null });
-  const [users, setUsers] = useState([]);
-  const [services, setServices] = useState([]);
   const [vehicles, setVehicles] = useState([]);
 
   useEffect(() => {
@@ -84,31 +55,6 @@ const BookingsManagement = () => {
       setError('Failed to fetch bookings');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleStatusUpdate = async (bookingId) => {
-    try {
-      const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:5000/api/bookings/${bookingId}/status`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(statusForm)
-      });
-
-      if (response.ok) {
-        fetchBookings();
-        setOpenDialog(false);
-        setStatusForm({ status: '', technicianNotes: '' });
-      } else {
-        const data = await response.json();
-        setError(data.message || 'Failed to update status');
-      }
-    } catch (error) {
-      setError('Network error');
     }
   };
 
@@ -141,47 +87,6 @@ const BookingsManagement = () => {
     });
   };
 
-  const handleOpenCreate = () => {
-    setCreateForm({ user: '', service: '', vehicle: '', scheduledDate: '', scheduledTime: '', totalAmount: '', status: 'pending', paymentStatus: 'pending', technicianNotes: '' });
-    fetchUsers();
-    fetchServices();
-    fetchVehicles();
-    setOpenCreateDialog(true);
-  };
-
-  const handleCloseCreate = () => {
-    setOpenCreateDialog(false);
-  };
-
-  const handleCreateChange = (e) => {
-    const { name, value } = e.target;
-    setCreateForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleCreateSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/bookings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify(createForm)
-      });
-      if (response.ok) {
-        fetchBookings();
-        handleCloseCreate();
-      } else {
-        const data = await response.json();
-        setError(data.message || 'Failed to create booking');
-      }
-    } catch (error) {
-      setError('Network error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleDelete = async () => {
     setLoading(true);
     try {
@@ -203,29 +108,6 @@ const BookingsManagement = () => {
     }
   };
 
-  const fetchUsers = async () => {
-    try {
-      const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/users', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setUsers(data.users || []);
-      }
-    } catch {}
-  };
-
-  const fetchServices = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/services');
-      if (response.ok) {
-        const data = await response.json();
-        setServices(data || []);
-      }
-    } catch {}
-  };
-
   const fetchVehicles = async () => {
     try {
       const token = localStorage.getItem('adminToken');
@@ -238,8 +120,6 @@ const BookingsManagement = () => {
       }
     } catch {}
   };
-
-  const filteredVehicles = createForm.user ? vehicles.filter(v => v.user && v.user._id === createForm.user) : vehicles;
 
   if (loading && bookings.length === 0) {
     return (
@@ -269,7 +149,7 @@ const BookingsManagement = () => {
               textTransform: 'none',
               '&:hover': { background: '#5A55E0' }
             }}
-            onClick={handleOpenCreate}
+            onClick={() => {}}
           >
             Add Booking
           </Button>
@@ -310,7 +190,7 @@ const BookingsManagement = () => {
                     ₹{booking.totalAmount?.toLocaleString()}
                   </TableCell>
                   <TableCell>
-                    <IconButton color="primary" onClick={() => { setSelectedBooking(booking); setOpenDialog(true); }}><ViewIcon /></IconButton>
+                    <IconButton color="primary" onClick={() => {}}><ViewIcon /></IconButton>
                     <IconButton color="error" onClick={() => setDeleteDialog({ open: true, booking })}><DeleteIcon /></IconButton>
                   </TableCell>
                 </TableRow>
