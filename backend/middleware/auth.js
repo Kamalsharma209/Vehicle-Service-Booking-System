@@ -44,7 +44,7 @@ const admin = (req, res, next) => {
 };
 
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+  return jwt.sign({ id }, 'your-super-secret-jwt-key', {
     expiresIn: process.env.JWT_EXPIRE || '7d'
   });
 };
