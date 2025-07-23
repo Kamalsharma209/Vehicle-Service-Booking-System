@@ -1,0 +1,42 @@
+[
+  {
+    "id": "honda-city",
+    "name": "Honda City",
+    "brand": "Honda",
+    "year": 2022,
+    "image": "https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg",
+    "description": "A popular sedan known for its comfort, fuel efficiency, and reliability."
+  },
+  {
+    "id": "maruti-swift",
+    "name": "Maruti Swift",
+    "brand": "Maruti Suzuki",
+    "year": 2021,
+    "image": "https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg",
+    "description": "A compact hatchback with sporty looks and great mileage."
+  },
+  {
+    "id": "hyundai-i20",
+    "name": "Hyundai i20",
+    "brand": "Hyundai",
+    "year": 2023,
+    "image": "https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg",
+    "description": "A premium hatchback with advanced features and stylish design."
+  },
+  {
+    "id": "tata-nexon",
+    "name": "Tata Nexon",
+    "brand": "Tata",
+    "year": 2022,
+    "image": "https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg",
+    "description": "A compact SUV with a 5-star safety rating and bold looks."
+  },
+  {
+    "id": "toyota-innova",
+    "name": "Toyota Innova",
+    "brand": "Toyota",
+    "year": 2020,
+    "image": "https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg",
+    "description": "A spacious MPV perfect for families and long journeys."
+  }
+] 
