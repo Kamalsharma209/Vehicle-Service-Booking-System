@@ -5,6 +5,9 @@ const { protect, admin } = require('../middleware/auth');
 
 const router = express.Router();
 
+// Helper to generate slug from name
+const slugify = (name) => name.toLowerCase().replace(/\s+/g, '-');
+
 // @desc    Get all services
 // @route   GET /api/services
 // @access  Public
@@ -51,6 +54,20 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// Update slug route to use slug field
+router.get('/slug/:slug', async (req, res) => {
+  try {
+    const service = await Service.findOne({ slug: req.params.slug });
+    if (!service) {
+      return res.status(404).json({ message: 'Service not found' });
+    }
+    res.json(service);
+  } catch (error) {
+    console.error('Get service by slug error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // @desc    Create new service
 // @route   POST /api/services
 // @access  Private/Admin
@@ -67,13 +84,13 @@ router.post('/', protect, admin, [
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-
-    const service = await Service.create(req.body);
+    const slug = slugify(req.body.name);
+    const service = await Service.create({ ...req.body, slug });
     res.status(201).json(service);
   } catch (error) {
     console.error('Create service error:', error);
     if (error.code === 11000) {
-      return res.status(400).json({ message: 'Service name already exists' });
+      return res.status(400).json({ message: 'Service name or slug already exists' });
     }
     res.status(500).json({ message: 'Server error' });
   }
@@ -93,19 +110,20 @@ router.put('/:id', protect, admin, [
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-
     const service = await Service.findById(req.params.id);
     if (!service) {
       return res.status(404).json({ message: 'Service not found' });
     }
-
     Object.assign(service, req.body);
+    if (req.body.name) {
+      service.slug = slugify(req.body.name);
+    }
     const updatedService = await service.save();
     res.json(updatedService);
   } catch (error) {
     console.error('Update service error:', error);
     if (error.code === 11000) {
-      return res.status(400).json({ message: 'Service name already exists' });
+      return res.status(400).json({ message: 'Service name or slug already exists' });
     }
     res.status(500).json({ message: 'Server error' });
   }

@@ -7,6 +7,11 @@ const serviceSchema = new mongoose.Schema({
     trim: true,
     unique: true
   },
+  slug: {
+    type: String,
+    required: true,
+    unique: true
+  },
   description: {
     type: String,
     required: [true, 'Please provide a service description']
