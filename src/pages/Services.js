@@ -347,7 +347,7 @@ const Services = () => {
                       boxShadow: '0 12px 40px rgba(108,99,255,0.15)',
                     },
                   }}
-                  onClick={() => handleServiceClick(service)}
+                  onClick={() => navigate(`/services/${service.name.replace(/\s+/g, '-').toLowerCase()}`)}
                 >
                   {/* Category Badge */}
                   <Box
